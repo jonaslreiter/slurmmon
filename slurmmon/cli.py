@@ -237,7 +237,8 @@ def run_interactive(state: AppState) -> None:
             while not stop_event.is_set():
                 watcher.tick()
                 with lock:
-                    live.update(render(state, height=console.size.height), refresh=True)
+                    size = console.size
+                    live.update(render(state, height=size.height, width=size.width), refresh=True)
                 key = read_key(0.15)
                 if not key:
                     continue
