@@ -875,7 +875,7 @@ def _queue_columns(table: Table) -> None:
     table.add_column("Mem", justify="right", no_wrap=True)
     table.add_column("GPU", justify="right", no_wrap=True)
     table.add_column("Time / Reason", no_wrap=True)
-    table.add_column("Nodes", ratio=1, min_width=8, no_wrap=True, overflow="ellipsis")
+    table.add_column("Nodes", ratio=1, min_width=8)
 
 
 def _queue_job_row(table: Table, j: Job, state: AppState, *, highlight: bool) -> None:
