@@ -557,6 +557,7 @@ def render_myjobs(state: AppState, height: int | None = None, width: int | None 
         )
         state.scroll = offset
         state.selected = selected
+        state.list_length = total
         state.current_list_job_ids = [g.prefix for g in groups]
         state.current_list_is_groups = True
 
@@ -579,6 +580,7 @@ def render_myjobs(state: AppState, height: int | None = None, width: int | None 
         )
         state.scroll = offset
         state.selected = selected
+        state.list_length = total_jobs
         # current_list_job_ids must be in the same order job_positions/selected
         # index into -- _flatten_grouped sorts each group's rows by job_id,
         # which is NOT necessarily `items`' original order, so this must come
@@ -613,6 +615,7 @@ def render_myjobs(state: AppState, height: int | None = None, width: int | None 
     )
     state.scroll = offset
     state.selected = selected
+    state.list_length = total
     state.current_list_job_ids = [r.job.job_id for r in items]
 
     rows = [
@@ -811,6 +814,7 @@ def render_nodes(state: AppState, height: int | None = None, width: int | None =
     )
     state.scroll = offset
     state.selected = selected
+    state.list_length = total
 
     table = Table(expand=False)
     table.add_column("Node", style="bold", no_wrap=True)
@@ -846,6 +850,7 @@ def render_users(state: AppState, height: int | None = None, width: int | None =
     )
     state.scroll = offset
     state.selected = selected
+    state.list_length = total
 
     table = Table(expand=False)
     table.add_column("User", style="bold", ratio=1, min_width=12)
@@ -909,6 +914,7 @@ def render_jobs(state: AppState, height: int | None = None, width: int | None = 
         )
         state.scroll = offset
         state.selected = selected
+        state.list_length = total
         state.current_list_job_ids = [g.prefix for g in groups]
         state.current_list_is_groups = True
 
@@ -931,6 +937,7 @@ def render_jobs(state: AppState, height: int | None = None, width: int | None = 
         )
         state.scroll = offset
         state.selected = selected
+        state.list_length = total_jobs
         state.current_list_job_ids = [j.job_id for kind, j in display if kind == "row"]
 
         table = Table(expand=False)
@@ -958,6 +965,7 @@ def render_jobs(state: AppState, height: int | None = None, width: int | None = 
     )
     state.scroll = offset
     state.selected = selected
+    state.list_length = total
     state.current_list_job_ids = [j.job_id for j in all_jobs]
 
     table = Table(expand=False)
@@ -973,6 +981,7 @@ def render_detail(state: AppState, height: int | None = None) -> RenderableType:
     """Full-screen overlay for the 'scontrol show job <id>' output fetched
     on demand when Enter is pressed on the jobs/myjobs screens."""
     title = f"Job {state.detail_job_id}"
+    state.detail_max_scroll = 0
     if state.detail_loading:
         body: RenderableType = Text(f"loading scontrol show job {state.detail_job_id} ...", style="cyan")
         border = "cyan"
@@ -984,6 +993,7 @@ def render_detail(state: AppState, height: int | None = None) -> RenderableType:
         lines = (state.detail_text or "").splitlines() or ["(no output)"]
         shown, offset, total = _scroll_window(lines, state.detail_scroll, height)
         state.detail_scroll = offset
+        state.detail_max_scroll = total - len(shown)
         body = Text("\n".join(shown))
         title = _list_title(title, offset, len(shown), total)
         border = "cyan"

@@ -160,3 +160,11 @@ def test_queue_fills_the_screen_exactly(group_mode, width, height):
     lines = _frame(_state(screen="jobs", group_mode=group_mode, selected=10_000), width, height)
     assert len(lines) == height
 
+
+def test_list_screens_record_list_length_for_key_handling():
+    state = _state(group_mode="headers")
+    _frame(state, 155, 30)
+    assert state.list_length == len(state.my_jobs)
+    state.group_mode = "summary"
+    _frame(state, 155, 30)
+    assert state.list_length == 3  # dias-val-satellite, ds-e4-exists, dias-val-blocks
